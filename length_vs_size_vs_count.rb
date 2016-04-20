@@ -95,6 +95,9 @@ if types.empty? || types.include?("string2")
       -> { string2.count('x') },
       -> { string2.count('l') },
       -> { string2.count('lo') },
+      -> { string2.count('lo', 'l') },
+      -> { string2.count('lo', '^l') },
+      -> { string2.count('k-m') },
     ]
   }).run
 end
