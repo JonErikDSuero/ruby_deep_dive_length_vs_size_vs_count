@@ -3,10 +3,10 @@ require './benchmark_presenter'
 puts "Ruby Version: #{RUBY_VERSION}"
 puts ""
 
-type = ARGV[0]
+types = ARGV
 
 
-if type == "sleep"
+if types.include?("sleep")
   BenchmarkPresenter.new({
     title: "SLEEP",
     setup: nil,
@@ -17,7 +17,7 @@ if type == "sleep"
 end
 
 
-if type.nil? || type == "array"
+if types.empty? || types.include?("array")
   array = nil
   BenchmarkPresenter.new({
     title: "ARRAY",
@@ -33,7 +33,7 @@ if type.nil? || type == "array"
   }).run
 end
 
-if type.nil? || type == "range"
+if types.empty? || types.include?("range")
   range = nil
   BenchmarkPresenter.new({
     title: "RANGE",
@@ -50,7 +50,7 @@ if type.nil? || type == "range"
 end
 
 
-if type.nil? || type == "hash"
+if types.empty? || types.include?("hash")
   hash = nil
   BenchmarkPresenter.new({
     title: "HASH",
@@ -67,7 +67,7 @@ if type.nil? || type == "hash"
 end
 
 
-if type.nil? || type == "string"
+if types.empty? || types.include?("string")
   string = nil
   BenchmarkPresenter.new({
     title: "STRING",
@@ -83,7 +83,7 @@ if type.nil? || type == "string"
 end
 
 
-if type.nil? || type == "string2"
+if types.empty? || types.include?("string2")
   string2 = nil
   BenchmarkPresenter.new({
     title: "STRING: PART 2",
