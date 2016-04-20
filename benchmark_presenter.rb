@@ -6,6 +6,8 @@ require 'colorize'
 class BenchmarkPresenter
 
   COLUMN_WIDTH = 35
+  ONE_MILLION = 10E5
+  MAX_NUMBER_OF_DIGITS = 9
 
   def initialize(title:, setup:, tasks:)
     @title = title
@@ -14,15 +16,11 @@ class BenchmarkPresenter
   end
 
   def run
-    @setup.call unless @setup.nil?
-
     puts title_header
-    puts setup_header unless @setup.nil?
+    puts run_setup unless @setup.nil?
 
     puts column_headers
-    @tasks.each do |task|
-      benchmark(task)
-    end
+    @tasks.each { |task| puts row_benchmark(task) }
 
     puts ""
     puts ""
@@ -32,7 +30,9 @@ class BenchmarkPresenter
     "#{@title}:".green
   end
 
-  def setup_header
+  def run_setup
+    @setup.call
+
     source(@setup).green
   end
 
@@ -42,27 +42,45 @@ class BenchmarkPresenter
      "Runtime (microseconds)").light_blue
   end
 
-  def benchmark(block)
+  def row_benchmark(block)
     begin
-      result = nil
-      runtime = Benchmark.realtime do
-        result = block.call
-      end
+      result, runtime = benchmark(block)
 
-      puts source(block).ljust(COLUMN_WIDTH) +
-        " | " + "#{result}".ljust(COLUMN_WIDTH) +
-        " | " + ("%.2f" % (runtime * 10E5)).rjust(9)
-    rescue => e
-      puts source(block).ljust(COLUMN_WIDTH).red +
-        " | " + e.to_s.red
-    end
+      row_result(block, result, runtime)
+   rescue => exception
+     row_exception(block, exception)
+   end
   end
 
   private
 
+  def benchmark(block)
+    result = nil
+    runtime = Benchmark.realtime do
+      result = block.call
+    end
+
+    [result, runtime]
+  end
+
+  def row_result(block, result, runtime)
+      source(block).ljust(COLUMN_WIDTH) +
+        " | " + "#{result}".ljust(COLUMN_WIDTH) +
+        " | " + runtime_string(runtime)
+  end
+
+  def row_exception(block, exception)
+    source(block).ljust(COLUMN_WIDTH).red +
+      " | " + exception.to_s.red
+  end
+
   def source(block)
     source_str = block.to_source
     source_str[7..source_str.length-3]
+  end
+
+  def runtime_string(runtime)
+    ("%.2f" % (runtime * ONE_MILLION)).rjust(MAX_NUMBER_OF_DIGITS)
   end
 
 end

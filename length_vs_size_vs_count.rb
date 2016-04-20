@@ -1,6 +1,6 @@
 require './benchmark_presenter'
 
-puts "Ruby Version: ", RUBY_VERSION
+puts "Ruby Version: #{RUBY_VERSION}"
 puts ""
 
 type = ARGV[0]
