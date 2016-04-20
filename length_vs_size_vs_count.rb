@@ -59,6 +59,7 @@ if type.nil? || type == "hash"
       -> { hash.length },
       -> { hash.size },
       -> { hash.count },
+      -> { hash.count{ |k,v| true } },
       -> { hash.count{ |k,v| k == :b } },
       -> { hash.count{ |k,v| v != 5 } },
     ]
